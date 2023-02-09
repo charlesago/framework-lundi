@@ -6,18 +6,18 @@ use Attributes\Table;
 use Attributes\TargetRepository;
 use Repositories\CommentRepository;
 
-
 #[Table(name: "comments")]
 #[TargetRepository(repositoryName: CommentRepository::class)]
 class Comment extends AbstractEntity
 {
 
 
+
     private int $id;
+
     private string $content;
-    private int $post_id;
 
-
+    private int $film_id;
 
     /**
      * @return int
@@ -46,16 +46,16 @@ class Comment extends AbstractEntity
     /**
      * @return int
      */
-    public function getPostId(): int
+    public function getFilmId(): int
     {
-        return $this->post_id;
+        return $this->film_id;
     }
 
     /**
-     * @param int $post_id
+     * @param int $film_id
      */
-    public function setPostId(int $post_id): void
+    public function setFilmId(int $film_id): void
     {
-        $this->post_id = $post_id;
+        $this->film_id = $film_id;
     }
 }

@@ -4,60 +4,59 @@ namespace Controllers;
 
 use Attributes\DefaultEntity;
 use Entity\Comment;
-use Entity\Post;
+use Entity\Film;
+
+
 
 #[DefaultEntity(entityName: Comment::class)]
-
 class CommentController extends AbstractController
 {
 
+    protected string $defaultEntityName = Comment::class;
     public function create(){
-
-        $postId = null;
         $content = null;
+        $film_id = null;
 
-        if(!empty($_POST['post_id']) && ctype_digit($_POST['post_id'])){
-            $postId = $_POST['post_id'];
+        if (!empty($_POST['film_id']) && ctype_digit($_POST["film_id"])){
+            $film_id = $_POST['film_id'];
+
         }
-        if(!empty($_POST['content'])){
-            $content = htmlspecialchars($_POST['content']);
+
+        if (!empty($_POST['content'])){
+            $content = htmlspecialchars($_POST["content"]) ;
         }
 
-        if($postId && $content){
 
-            $postEntity = new Post();
+        if ($content && $film_id){
 
-            $post = $this->getRepository(Post::class)->findById($postId);
+            $filmEntity = new Film();
 
-            if(!$post){
+
+            $film= $this->getRepository(Film::class)->findById($film_id);
+
+            if (!$film){
                 return $this->redirect();
             }
 
             $comment = new Comment();
             $comment->setContent($content);
-            $comment->setPostId($postId);
+            $comment->setFilmId($film_id);
 
-            $this->repository->insert($comment);
+            $this->getRepository(Comment::class)->insert($comment);
 
             return $this->redirect([
-                "type"=>"post",
+                "type"=>"film",
                 "action"=>"show",
-                "id"=>$post->getId()
+                "id"=>$film->getId()
             ]);
-
-
-
         }
-        return $this->redirect();
-
     }
-
     public function remove(){
 
         $id = null;
 
         if(!empty($_GET['id']) && ctype_digit($_GET['id'])){
-           $id = $_GET['id'];
+            $id = $_GET['id'];
         }
 
         if(!$id){  return $this->redirect(); }
@@ -69,17 +68,15 @@ class CommentController extends AbstractController
         $this->repository->delete($comment);
 
         return $this->redirect([
-            "type"=>"post",
+            "type"=>"film",
             "action"=>"show",
-            "id"=>$comment->getPostId()
+            "id"=>$comment->getFilmId()
         ]);
 
 
     }
 
-    public function change(){
-
-
+    public function update(){
 
         $id = null;
         $content = null;
@@ -103,9 +100,9 @@ class CommentController extends AbstractController
             $this->repository->update($comment);
 
             return $this->redirect([
-                "type"=>"post",
-                "action"=>"show",
-                "id"=>$comment->getPostId()
+                "type"=>"comment",
+                "action"=>"update",
+                "id"=>$comment->getFilmId()
             ]);
 
         }
@@ -126,9 +123,9 @@ class CommentController extends AbstractController
 
         return $this->render('comments/update', [
             "comment"=>$comment,
-            "pageTitle"=> "Modifier votre comment"
+            "pageTitle"=> "Modifier votre comment",
+
         ]);
 
     }
-
 }

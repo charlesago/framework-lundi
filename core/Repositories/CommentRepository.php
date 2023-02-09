@@ -2,39 +2,33 @@
 
 namespace Repositories;
 
-use Attributes\DefaultEntity;
 use Attributes\TargetEntity;
 use Entity\Comment;
+use Entity\Film;
 
 #[TargetEntity(entityName: Comment::class)]
-
-
 class CommentRepository extends AbstractRepository
 {
+    public function findAllByFilm(Film $film){
 
-    public function findAllByPost(\Entity\Post $post){
-        $query= $this->pdo->prepare("SELECT * FROM {$this->tableName} WHERE post_id=:post_id");
+        $query= $this->pdo->prepare("SELECT * FROM {$this->tableName} WHERE film_id= :film_id");
 
-        $query->execute(["post_id"=>$post->getId()]);
-        $query->setFetchMode(\PDO::FETCH_CLASS, get_class($this->targetEntity));
+        $query->execute(["film_id"=>$film->getId()]);
+        $comment = $query->fetchAll(\PDO::FETCH_CLASS, get_class($this->targetEntity));
 
-        $comments = $query->fetchAll();
-        return $comments;
+
+        return $comment;
     }
 
-
-
-
-    public function insert(\Entity\Comment $comment){
-        $request = $this->pdo->prepare("INSERT INTO {$this->tableName} SET post_id = :post_id, content = :content");
+    public function insert(Comment $comment){
+        $request = $this->pdo->prepare("INSERT INTO {$this->tableName} SET film_id = :film_id, content = :content");
 
 
         $request->execute([
-            "post_id"=> $comment->getPostId(),
+            "film_id"=> $comment->getFilmId(),
             "content"=>$comment->getContent()
         ]);
     }
-
     public function update(\Entity\Comment $comment){
         $requete = $this->pdo->prepare("UPDATE {$this->tableName} SET content = :content WHERE id = :id");
         $requete->execute([

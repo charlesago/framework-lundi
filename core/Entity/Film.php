@@ -2,26 +2,22 @@
 
 namespace Entity;
 
-
 use Attributes\Table;
 use Attributes\TargetRepository;
-use Repositories\PostRepository;
+use Repositories\FilmRepository;
 
-#[Table(name: "posts")]
-#[TargetRepository(repositoryName: PostRepository::class)]
-
-class Post extends AbstractEntity
+#[Table(name: "films")]
+#[TargetRepository(repositoryName: FilmRepository::class)]
+class Film extends AbstractEntity
 {
 
-
-
-
     private int $id;
+
     private string $title;
-    private string $content;
+    
+    private string $synopsis;
 
     private string $image;
-
 
     /**
      * @return int
@@ -31,6 +27,15 @@ class Post extends AbstractEntity
         return $this->id;
     }
 
+    /**
+     * @param string $title
+     * @return Film
+     */
+    public function setTitle(string $title): Film
+    {
+        $this->title = $title;
+        return $this;
+    }
 
     /**
      * @return string
@@ -41,27 +46,19 @@ class Post extends AbstractEntity
     }
 
     /**
-     * @param string $title
-     */
-    public function setTitle(string $title): void
-    {
-        $this->title = $title;
-    }
-
-    /**
      * @return string
      */
-    public function getContent(): string
+    public function getSynopsis(): string
     {
-        return $this->content;
+        return $this->synopsis;
     }
 
     /**
-     * @param string $content
+     * @param string $synopsis
      */
-    public function setContent(string $content): void
+    public function setSynopsis(string $synopsis): void
     {
-        $this->content = $content;
+        $this->synopsis = $synopsis;
     }
 
     /**
